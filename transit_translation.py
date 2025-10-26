@@ -23,8 +23,9 @@ def translate_text(text, language_name):
     result = translator.translate_text(text, target_lang=target_code)
     return result.text
 
-text = "Hello, next stop is Market Street"
-print("French:", translate_text(text, "French"))
-print("Chinese:", translate_text(text, "Chinese (Simplified)"))
-print("Spanish:", translate_text(text, "Spanish"))
-print("Japanese:", translate_text(text, "Japanese"))
+if __name__ == "__main__":
+    text = "Hello, next stop is Market Street"
+    print("French:", translate_text(text, "French"))
+    print("Chinese:", translate_text(text, "Chinese (Simplified)"))
+    print("Spanish:", translate_text(text, "Spanish"))
+    print("Japanese:", translate_text(text, "Japanese"))
