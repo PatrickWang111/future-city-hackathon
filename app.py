@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from transit_translation import save_audio, text_to_speech, translate_text
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/translate', methods=['POST'])
 def translate():
@@ -28,10 +30,11 @@ def generate_audio():
     try:
         translated = translate_text(text, language)
         audio_data = text_to_speech(translated, voice)
-        # Save and return filename
         filename = f"{language}_{voice}.mp3"
         save_audio(audio_data, filename)
-        return jsonify({'audio_file': filename, 'translated_text': translated})
+        
+        # returns the audio as binary data
+        return audio_data, 200, {'Content-Type': 'audio/mpeg'}
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 

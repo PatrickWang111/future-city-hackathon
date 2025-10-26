@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transit Voice System</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        input, select, button { padding: 10px; font-size: 16px; margin: 5px; }
+        button { background-color: #007bff; color: white; cursor: pointer; border: none; border-radius: 4px; }
+        button:hover { background-color: #0056b3; }
+        h2 { margin-top: 20px; }
+        #result { margin: 15px 0; font-weight: bold; color: #28a745; }
+        select[multiple] { width: 300px; }
+    </style>
+</head>
+<body>
+    <h1>Transit Voice System</h1>
+    
+    <h2>Select Languages:</h2>
+    <select id="languages" multiple size="4">
+        <option value="English">English</option>
+        <option value="French">French</option>
+        <option value="Chinese (Simplified)">Chinese (Simplified)</option>
+        <option value="Spanish">Spanish</option>
+        <option value="German">German</option>
+        <option value="Italian">Italian</option>
+        <option value="Japanese">Japanese</option>
+        <option value="Korean">Korean</option>
+    </select>
+    <button onclick="selectAllLanguages()">Select All</button>
+
+    <h2>Demo Lines:</h2>
+    <button onclick="setDemo('Next stop: Market Street')">Market Street</button>
+    <button onclick="setDemo('Last stop: Central Station')">Central Station</button>
+    <button onclick="setDemo('Please mind the gap')">Mind the Gap</button>
+
+    <h2>Voice:</h2>
+    <select id="voice">
+        <option value="adam">Adam</option>
+        <option value="rachel">Rachel</option>
+        <option value="alice">Alice</option>
+        <option value="bill">Bill</option>
+    </select>
+
+    <h2>Announcement Text:</h2>
+    <input type="text" id="text" placeholder="Enter transit announcement" value="Hello, next stop is Market Street" style="width: 500px;">
+
+    <br><br>
+    <button onclick="generateAllAudio()">Generate Audio</button>
+
+    <div id="result"></div>
+    <audio id="player" controls></audio>
+
+    <script>
+        function setDemo(text) {
+            document.getElementById('text').value = text;
+        }
+
+        function selectAllLanguages() {
+            const select = document.getElementById('languages');
+            for (let option of select.options) {
+                option.selected = true;
+            }
+        }
+
+        async function generateAllAudio() {
+            const text = document.getElementById('text').value;
+            const voice = document.getElementById('voice').value;
+            
+            // Get selected languages
+            const select = document.getElementById('languages');
+            const languages = Array.from(select.selectedOptions).map(opt => opt.value);
+            
+            if (languages.length === 0) {
+                alert('Select at least one language!');
+                return;
+            }
+            
+            const player = document.getElementById('player');
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerText = 'Generating audio...';
+            
+            // Generate and play sequentially
+            for (let language of languages) {
+                try {
+                    const response = await fetch('http://127.0.0.1:5000/generate-audio', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text, language, voice })
+                    });
+                    
+                    const audioBlob = await response.blob();
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    player.src = audioUrl;
+                    resultDiv.innerText = `Now playing: ${language}`;
+                    
+                    // Wait for audio to finish before next language
+                    await new Promise(resolve => {
+                        player.onended = resolve;
+                        player.play();
+                    });
+                } catch (error) {
+                    resultDiv.innerText = `Error: ${error.message}`;
+                }
+            }
+            
+            resultDiv.innerText = 'Done!';
+        }
+    </script>
+</body>
+</html>
