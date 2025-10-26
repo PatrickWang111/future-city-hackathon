@@ -1,6 +1,7 @@
 from env import DEEPL_API_KEY, ELEVEN_LABS_API_KEY
 import requests
 import deepl
+import os
 
 translator = deepl.Translator(DEEPL_API_KEY)
 
@@ -65,11 +66,16 @@ def text_to_speech(text, voice_name="adam"):
         raise Exception(f"ElevenLabs API error: {response.status_code} - {response.text}")
     
 def save_audio(audio_bytes, filename):
-    # audio bytes is the Elevenlabs data
-
-    with open(filename, "wb") as f:  # write binary mode
+    # Ensure audio_output directory exists
+    os.makedirs("audio_output", exist_ok=True)
+    
+    # Create full path
+    filepath = os.path.join("audio_output", filename)
+    
+    # Save audio bytes to file
+    with open(filepath, "wb") as f:
         f.write(audio_bytes)
-    print(f"Audio saved to {filename}")
+    print(f"Audio saved to {filepath}")
 
 # combine translation and Text-To-Speech
 def translate_and_speak(text, target_language, voice_name="adam", output_file="output.mp3"):
