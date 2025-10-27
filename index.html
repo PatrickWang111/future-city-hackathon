@@ -82,7 +82,7 @@
             // Generate and play sequentially
             for (let language of languages) {
                 try {
-                    const response = await fetch('https://polyvoice.onrender.com', {
+                    const response = await fetch('https://polyvoice.onrender.com/generate-audio', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ text, language, voice })
