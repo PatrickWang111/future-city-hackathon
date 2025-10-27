@@ -1,7 +1,13 @@
-from env import DEEPL_API_KEY, ELEVEN_LABS_API_KEY
+import os
 import requests
 import deepl
-import os
+
+# Try to import from env.py (local dev), otherwise use environment variables (production)
+try:
+    from env import DEEPL_API_KEY, ELEVEN_LABS_API_KEY
+except ImportError:
+    DEEPL_API_KEY = os.environ.get('DEEPL_API_KEY')
+    ELEVEN_LABS_API_KEY = os.environ.get('ELEVEN_LABS_API_KEY')
 
 translator = deepl.Translator(DEEPL_API_KEY)
 
