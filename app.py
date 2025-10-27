@@ -5,6 +5,16 @@ from transit_translation import save_audio, text_to_speech, translate_text
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({
+        'message': 'PolyVoice Transit API',
+        'endpoints': {
+            '/translate': 'POST - Translate text to different languages',
+            '/generate-audio': 'POST - Generate audio from translated text'
+        }
+    })
+
 @app.route('/translate', methods=['POST'])
 def translate():
     data = request.json
