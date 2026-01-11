@@ -10,7 +10,7 @@ Professional multi-lingual voice synthesis for transit systems using ElevenLabs 
 - Real-time progress tracking
 
 ## Tech Stack
-- **Frontend:** React, Tailwind CSS, HTML
+- **Frontend:** Figma Make
 - **Backend:** Flask, Python
 - **APIs:** ElevenLabs (TTS), DeepL (Translation)
 
